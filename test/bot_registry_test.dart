@@ -30,8 +30,8 @@ void main() {
 
     test('reports unknown bot IDs', () async {
       final registry = BotRegistry([EchoBot()]);
-      await expectLater(
-        registry.run('missing', const BotContext(input: 'x')),
+      expect(
+        () => registry.run('missing', const BotContext(input: 'x')),
         throwsArgumentError,
       );
     });
