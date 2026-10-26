@@ -1,10 +1,11 @@
 {
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
-  "editor.formatOnSave": true,
   "files.eol": "\n",
   "files.trimTrailingWhitespace": true,
   "[dart]": {
-    "editor.defaultFormatter": "Dart-Code.dart-code"
-  }
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "dart.lineLength": 80
 }
