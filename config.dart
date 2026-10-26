@@ -1,3 +1,2 @@
-/// Public bot-system exports retained for compatibility with earlier
-/// experiments in this repository.
+/// Public bot-system API for projects that previously imported config.dart.
 export 'lib/bot_system.dart';
