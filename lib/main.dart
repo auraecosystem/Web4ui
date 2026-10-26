@@ -1,59 +1,129 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-class BotLoader {
-  final String configUrl;
-
-  BotLoader({required this.configUrl});
-
-  /// Load bots dynamically from a remote URL
-  Future<void> loadBots() async {
-    final response = await http.get(Uri.parse(configUrl));
-
-    if (response.statusCode == 200) {
-      final config = jsonDecode(response.body);
-
-      for (var bot in config['bots']) {
-        final botName = bot['name'];
-        final botUrl = bot['url'];
-
-        print('Loading bot: $botName from $botUrl');
-
-        // Load the bot dynamically (Here we just print, but in reality, you would fetch the bot content)
-        await loadBot(botUrl);
-      }
-    } else {
-      print('Failed to load config: ${response.statusCode}');
-    }
-  }
-
-  /// A mock method to simulate bot loading (e.g., fetch bot code or run it)
-  Future<void> loadBot(String botUrl) async {
-    // In a real app, you'd fetch the bot code from the URL
-    print('Bot loaded from: $botUrl');
-  }
-}
+import 'package:flutter/services.dart';
+import 'bot_system.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const Web4uiApp());
 }
 
-class MyApp extends StatelessWidget {
+class Web4uiApp extends StatelessWidget {
+  const Web4uiApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text("Dynamic Bot Loader")),
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () async {
-              final botLoader = BotLoader(configUrl: 'https://example.com/bots_config.json');
-              await botLoader.loadBots();
-            },
-            child: Text("Load Bots"),
+      title: 'Web4ui',
+      theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
+      home: const BotWorkbenchPage(),
+    );
+  }
+}
+
+class BotWorkbenchPage extends StatefulWidget {
+  const BotWorkbenchPage({super.key});
+
+  @override
+  State<BotWorkbenchPage> createState() => _BotWorkbenchPageState();
+}
+
+class _BotWorkbenchPageState extends State<BotWorkbenchPage> {
+  final _scriptController = TextEditingController(
+    text: '// TODO: review this code\nvoid main() async {\n  await task();\n}',
+  );
+  final _registry = BotRegistry([ScriptAnalyzerPlugin()]);
+  String? _report;
+  String? _error;
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _scriptController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _runAnalyzer() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+      _report = null;
+    });
+    try {
+      final config = await rootBundle.loadString('config/bots.json');
+      final enabledBots = _registry.enabledFromJson(config);
+      final analyzer = enabledBots.where((bot) => bot.id == 'script-analyzer');
+      if (analyzer.isEmpty) {
+        throw StateError('Script Analyzer is disabled in config/bots.json.');
+      }
+      final result = await _registry.run(
+        'script-analyzer',
+        BotContext(input: _scriptController.text),
+      );
+      if (!mounted) return;
+      setState(() {
+        _report = result.details.entries
+            .map((entry) => '${entry.key}: ${entry.value}')
+            .join('\n');
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _error = error.toString());
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Web4ui Bot Workbench')),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          Text(
+            'Registered bots',
+            style: Theme.of(context).textTheme.titleLarge,
           ),
-        ),
+          const SizedBox(height: 8),
+          const ListTile(
+            leading: Icon(Icons.analytics_outlined),
+            title: Text('Script Analyzer'),
+            subtitle: Text('Analyze comments, TODOs, async/await, and script size.'),
+          ),
+          const SizedBox(height: 16),
+          Text('Script input', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _scriptController,
+            minLines: 7,
+            maxLines: 14,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Paste script code to analyze',
+            ),
+          ),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: _busy ? null : _runAnalyzer,
+            icon: _busy
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.play_arrow),
+            label: Text(_busy ? 'Analyzing…' : 'Analyze script'),
+          ),
+          if (_error != null) ...[
+            const SizedBox(height: 16),
+            Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+          ],
+          if (_report != null) ...[
+            const SizedBox(height: 16),
+            Text('Analysis report', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 8),
+            SelectableText(_report!),
+          ],
+        ],
       ),
     );
   }
