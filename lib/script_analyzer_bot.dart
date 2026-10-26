@@ -1,5 +1,16 @@
 // lib/analyzer.dart
+// Existing code...
 
+/// New Function: Count number of comments in a Dart script
+int countComments(String script) {
+  final commentRegex = RegExp(r'//.*?$|/\*.*?\*/', multiLine: true, dotAll: true);
+  return commentRegex.allMatches(script).length;
+}
+
+/// New Function: Check if a script uses async/await
+bool usesAsyncAwait(String script) {
+  return script.contains('async') && script.contains('await');
+}
 /// Basic Script Analyzer Bot
 
 class ScriptAnalyzer {
