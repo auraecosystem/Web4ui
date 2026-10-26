@@ -1,10 +1,11 @@
 {
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
-  "eslint.enable": true,
-  "eslint.autoFixOnSave": true,
   "files.eol": "\n",
   "files.trimTrailingWhitespace": true,
-  "files.autoSave": "onWindowChange",
-  "workbench.colorTheme": "Visual Studio Dark"
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "dart.lineLength": 80
 }
