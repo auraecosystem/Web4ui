@@ -11,7 +11,12 @@ class BotRegistry {
   BotRegistry({List<Web4Bot>? builtIns})
       : _builtIns = List<Web4Bot>.unmodifiable(
           builtIns ?? const <Web4Bot>[ScriptAnalyzerPlugin()],
-        );
+        ) {
+    final ids = _builtIns.map((bot) => bot.id).toList();
+    if (ids.toSet().length != ids.length || ids.any((id) => id.trim().isEmpty)) {
+      throw ArgumentError('Built-in bot IDs must be unique and non-empty.');
+    }
+  }
 
   final List<Web4Bot> _builtIns;
   List<Web4Bot> _active = const <Web4Bot>[];
@@ -35,15 +40,23 @@ class BotRegistry {
     }
 
     final enabledIds = <String>{};
+    final seenIds = <String>{};
     for (final item in rawBots) {
       if (item is! Map<String, dynamic> || item['id'] is! String) {
         throw const FormatException('Each bot entry must contain a string id.');
+      }
+      final id = (item['id'] as String).trim();
+      if (id.isEmpty) {
+        throw const FormatException('Bot IDs must not be empty.');
+      }
+      if (!seenIds.add(id)) {
+        throw FormatException('Duplicate bot ID in configuration: $id');
       }
       final enabled = item['enabled'];
       if (enabled != null && enabled is! bool) {
         throw const FormatException('Bot "enabled" must be a boolean.');
       }
-      if (enabled != false) enabledIds.add(item['id'] as String);
+      if (enabled != false) enabledIds.add(id);
     }
 
     final knownIds = _builtIns.map((bot) => bot.id).toSet();
