@@ -2,17 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Program",
-      "type": "node",
+      "name": "Web4ui (Flutter)",
+      "type": "dart",
       "request": "launch",
-      "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/index.js"
-    },
-    {
-      "name": "Attach to Process",
-      "type": "node",
-      "request": "attach",
-      "processId": "${command:PickProcess}"
+      "program": "lib/main.dart"
     }
   ]
 }
