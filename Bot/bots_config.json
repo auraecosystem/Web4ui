@@ -1,9 +1,12 @@
 {
   "bots": [
     {
-      "id": "script-analyzer",
-      "name": "Script Analyzer",
-      "enabled": true
+      "name": "ScriptAnalyzerBot",
+      "url": "https://example.com/bots/script_analyzer_bot.dart"
+    },
+    {
+      "name": "AnotherBot",
+      "url": "https://example.com/bots/another_bot.dart"
     }
   ]
 }
