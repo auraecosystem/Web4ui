@@ -1,0 +1,12 @@
+{
+  "bots": [
+    {
+      "name": "ScriptAnalyzerBot",
+      "path": "lib/script_analyzer_bot.dart"
+    },
+    {
+      "name": "AnotherBot",
+      "path": "lib/another_bot.dart"
+    }
+  ]
+}
