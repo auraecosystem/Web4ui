@@ -1,0 +1,4 @@
+<content url="file://$MODULE_DIR$">
+    <excludeFolder url="file://$MODULE_DIR$/build" />
+    <sourceFolder url="file://$MODULE_DIR$/script_analyzer_bot/lib" isTestSource="false" />
+</content>
