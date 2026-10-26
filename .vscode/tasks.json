@@ -2,23 +2,30 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "npm install",
+      "label": "Flutter: Get Dependencies",
       "type": "shell",
-      "command": "npm install",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "problemMatcher": ["$tsc"],
-      "detail": "Install Node.js dependencies"
+      "command": "flutter pub get",
+      "problemMatcher": [],
+      "group": "build"
     },
     {
-      "label": "Run Tests",
+      "label": "Dart: Format",
       "type": "shell",
-      "command": "npm test",
-      "group": "test",
-      "problemMatcher": ["$eslint-stylish"],
-      "detail": "Run unit tests"
+      "command": "dart format lib test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Flutter: Analyze",
+      "type": "shell",
+      "command": "flutter analyze",
+      "problemMatcher": []
+    },
+    {
+      "label": "Flutter: Test",
+      "type": "shell",
+      "command": "flutter test",
+      "problemMatcher": [],
+      "group": "test"
     }
   ]
 }
