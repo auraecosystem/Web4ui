@@ -1,16 +1,18 @@
-// bin/main.dart or main.dart
+import 'package:web4ui/bot_system.dart';
 
-import 'package:script_analyzer_bot/analyzer.dart';
+Future<void> main() async {
+  const sample = '''
+// TODO: replace this example with your script
+void main() async {
+  await doSomething();
+}
+''';
 
-void main() {
-  const sampleScript = '''
-  // This is a comment
-  void main() async {
-    await doSomething();
-    // TODO: Refactor this function
-  }
-  ''';
-
-  final analyzer = ScriptAnalyzer(sampleScript);
-  analyzer.analyze();
+  final registry = BotRegistry([ScriptAnalyzerPlugin()]);
+  final result = await registry.run(
+    'script-analyzer',
+    const BotContext(input: sample),
+  );
+  print(result.summary);
+  result.details.forEach((key, value) => print('$key: $value'));
 }
