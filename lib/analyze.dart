@@ -1,47 +1,23 @@
-import 'dart:convert';
 import 'dart:io';
 
-class BotLoader {
-  /// Load bots dynamically based on the configuration file
-  void loadBots(String configFilePath) async {
-    final file = File(configFilePath);
-    if (await file.exists()) {
-      final contents = await file.readAsString();
-      final config = jsonDecode(contents);
+import 'script_analyzer_bot.dart';
 
-      for (var bot in config['bots']) {
-        final botName = bot['name'];
-        final botPath = bot['path'];
-        
-        print('Loading bot: $botName from $botPath');
-
-        // Dynamically import bot file
-        await loadBot(botPath);
-      }
-    } else {
-      print('Config file not found: $configFilePath');
-    }
+/// Command-line entry point for analyzing a local text file.
+///
+/// Usage: dart run lib/analyze.dart path/to/script.dart
+Future<void> main(List<String> args) async {
+  if (args.length != 1) {
+    stderr.writeln('Usage: dart run lib/analyze.dart <script-file>');
+    exitCode = 64;
+    return;
   }
 
-  /// A mock method to simulate dynamically loading a bot
-  Future<void> loadBot(String botPath) async {
-    // In a real implementation, you'd use Dart reflection or a plugin system.
-    // For simplicity, we just print out which bot is "loaded".
-    print('Bot loaded from $botPath');
+  final file = File(args.single);
+  if (!await file.exists()) {
+    stderr.writeln('File not found: ${file.path}');
+    exitCode = 66;
+    return;
   }
-}
 
-void main() {
-  final botLoader = BotLoader();
-  
-  // Path to your bots config file
-  botLoader.loadBots('bots_config.json');
-}
-
-void analyzeScript(String script) {
-  final commentCount = countComments(script);
-  final hasAsyncAwait = usesAsyncAwait(script);
-
-  print('Script has $commentCount comments.');
-  print('Script uses async/await: $hasAsyncAwait');
+  ScriptAnalyzer(await file.readAsString()).analyze();
 }
