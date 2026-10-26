@@ -46,5 +46,21 @@ void main() {
       expect(result.details['todoFixmeCount'], 1);
       expect(result.details['usesAsyncAwait'], isTrue);
     });
+
+    test('JSON config selects only enabled registered bots', () {
+      final registry = BotRegistry([EchoBot()]);
+      final enabled = registry.enabledFromJson(
+        '{"bots":[{"id":"echo","enabled":true},{"id":"other","enabled":false}]}',
+      );
+      expect(enabled.map((bot) => bot.id), ['echo']);
+    });
+
+    test('JSON config rejects unknown enabled bots', () {
+      final registry = BotRegistry([EchoBot()]);
+      expect(
+        () => registry.enabledFromJson('{"bots":[{"id":"missing"}]}'),
+        throwsFormatException,
+      );
+    });
   });
 }
