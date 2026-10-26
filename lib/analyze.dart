@@ -2,46 +2,60 @@ import 'dart:convert';
 import 'dart:io';
 
 class BotLoader {
-  /// Load bots dynamically based on the configuration file
-  void loadBots(String configFilePath) async {
+  /// Reads a local JSON manifest and reports the configured bot entries.
+  ///
+  /// This intentionally does not execute Dart files from disk. Dart/Flutter
+  /// applications should register executable bot implementations in-process.
+  Future<void> loadBots(String configFilePath) async {
     final file = File(configFilePath);
-    if (await file.exists()) {
-      final contents = await file.readAsString();
-      final config = jsonDecode(contents);
+    if (!await file.exists()) {
+      stderr.writeln('Config file not found: $configFilePath');
+      return;
+    }
 
-      for (var bot in config['bots']) {
-        final botName = bot['name'];
-        final botPath = bot['path'];
-        
-        print('Loading bot: $botName from $botPath');
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(await file.readAsString());
+    } on FormatException catch (error) {
+      stderr.writeln('Invalid bot configuration: $error');
+      return;
+    }
 
-        // Dynamically import bot file
-        await loadBot(botPath);
+    if (decoded is! Map<String, dynamic> || decoded['bots'] is! List) {
+      stderr.writeln('Invalid bot configuration: expected a "bots" array.');
+      return;
+    }
+
+    for (final entry in decoded['bots'] as List) {
+      if (entry is! Map<String, dynamic>) {
+        stderr.writeln('Skipping malformed bot entry: $entry');
+        continue;
       }
-    } else {
-      print('Config file not found: $configFilePath');
+      final name = entry['name'];
+      final path = entry['path'];
+      if (name is String && path is String) {
+        stdout.writeln('Configured bot: $name ($path)');
+      } else {
+        stderr.writeln('Skipping bot entry without string name/path: $entry');
+      }
     }
   }
-
-  /// A mock method to simulate dynamically loading a bot
-  Future<void> loadBot(String botPath) async {
-    // In a real implementation, you'd use Dart reflection or a plugin system.
-    // For simplicity, we just print out which bot is "loaded".
-    print('Bot loaded from $botPath');
-  }
 }
 
-void main() {
-  final botLoader = BotLoader();
-  
-  // Path to your bots config file
-  botLoader.loadBots('bots_config.json');
+int countComments(String script) {
+  final pattern = RegExp(r'//.*?$|/\*[\s\S]*?\*/', multiLine: true);
+  return pattern.allMatches(script).length;
 }
+
+bool usesAsyncAwait(String script) =>
+    RegExp(r'\basync\b').hasMatch(script) &&
+    RegExp(r'\bawait\b').hasMatch(script);
 
 void analyzeScript(String script) {
-  final commentCount = countComments(script);
-  final hasAsyncAwait = usesAsyncAwait(script);
+  stdout.writeln('Comments found: ${countComments(script)}');
+  stdout.writeln('Uses async/await: ${usesAsyncAwait(script)}');
+}
 
-  print('Script has $commentCount comments.');
-  print('Script uses async/await: $hasAsyncAwait');
+Future<void> main() async {
+  await BotLoader().loadBots('Bot/bots_config.json');
 }
