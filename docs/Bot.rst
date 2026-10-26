@@ -89,11 +89,11 @@ The file should follow this format:
   "bots": [
     {
       "name": "ScriptAnalyzerBot",
-      "url": "https://example.com/bots/script_analyzer_bot.dart"
+      "url": "https://example.net/bots/script_analyzer_bot.dart"
     },
     {
       "name": "AnotherBot",
-      "url": "https://example.com/bots/another_bot.dart"
+      "url": "https://examples.com/bots/another_bot.dart"
     }
   ]
 }
