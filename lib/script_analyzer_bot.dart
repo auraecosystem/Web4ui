@@ -1,39 +1,54 @@
-import 'dart:convert';
-import 'dart:io';
+// lib/analyzer.dart
 
-class BotLoader {
-  /// Load bots dynamically based on the configuration file
-  void loadBots(String configFilePath) async {
-    final file = File(configFilePath);
-    if (await file.exists()) {
-      final contents = await file.readAsString();
-      final config = jsonDecode(contents);
+/// Basic Script Analyzer Bot
 
-      for (var bot in config['bots']) {
-        final botName = bot['name'];
-        final botPath = bot['path'];
-        
-        print('Loading bot: $botName from $botPath');
+class ScriptAnalyzer {
+  final String script;
 
-        // Dynamically import bot file
-        await loadBot(botPath);
+  ScriptAnalyzer(this.script);
+
+  /// Counts the number of comments (// or /* */) in the script
+  int countComments() {
+    final commentRegex = RegExp(r'//.*?$|/\*.*?\*/', multiLine: true, dotAll: true);
+    return commentRegex.allMatches(script).length;
+  }
+
+  /// Checks if the script uses async/await keywords
+  bool usesAsyncAwait() {
+    return script.contains('async') && script.contains('await');
+  }
+
+  /// Counts the number of TODO or FIXME comments
+  int countTodoFixme() {
+    final todoRegex = RegExp(r'(TODO|FIXME)', caseSensitive: false);
+    return todoRegex.allMatches(script).length;
+  }
+
+  /// Checks for long functions (more than 50 lines)
+  bool hasLongFunctions() {
+    final functionRegex = RegExp(r'\w+\s+\w+\(.*\)\s*{', multiLine: true);
+    final matches = functionRegex.allMatches(script);
+    for (var match in matches) {
+      final functionStart = match.start;
+      final functionEnd = script.indexOf('}', functionStart);
+      if (functionEnd != -1) {
+        final functionBody = script.substring(functionStart, functionEnd);
+        final lineCount = '\n'.allMatches(functionBody).length;
+        if (lineCount > 50) {
+          return true;
+        }
       }
-    } else {
-      print('Config file not found: $configFilePath');
     }
+    return false;
   }
 
-  /// A mock method to simulate dynamically loading a bot
-  Future<void> loadBot(String botPath) async {
-    // In a real implementation, you'd use Dart reflection or a plugin system.
-    // For simplicity, we just print out which bot is "loaded".
-    print('Bot loaded from $botPath');
+  /// Analyzes the script and prints the results
+  void analyze() {
+    print('--- Script Analysis Report ---');
+    print('Comments found: ${countComments()}');
+    print('Uses async/await: ${usesAsyncAwait()}');
+    print('TODO/FIXME comments: ${countTodoFixme()}');
+    print('Has long functions (>50 lines): ${hasLongFunctions()}');
+    print('--------------------------------');
   }
-}
-
-void main() {
-  final botLoader = BotLoader();
-  
-  // Path to your bots config file
-  botLoader.loadBots('bots_config.json');
 }
