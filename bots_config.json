@@ -1,0 +1,12 @@
+{
+  "bots": [
+    {
+      "name": "ScriptAnalyzerBot",
+      "url": "https://example.com/bots/script_analyzer_bot.dart"
+    },
+    {
+      "name": "go-away",
+      "url": "https://example.com/bots/go-away.dart"
+    }
+  ]
+}
