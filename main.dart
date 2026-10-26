@@ -1,16 +1,4 @@
-// bin/main.dart or main.dart
+/// Root entry point retained for tools that invoke `dart run main.dart`.
+import 'lib/main.dart' as web4ui;
 
-import 'package:script_analyzer_bot/analyzer.dart';
-
-void main() {
-  const sampleScript = '''
-  // This is a comment
-  void main() async {
-    await doSomething();
-    // TODO: Refactor this function
-  }
-  ''';
-
-  final analyzer = ScriptAnalyzer(sampleScript);
-  analyzer.analyze();
-}
+void main() => web4ui.main();
