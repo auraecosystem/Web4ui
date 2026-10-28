@@ -39,3 +39,13 @@ flutter pub get
 dart format lib test
 flutter analyze
 flutter test
+
+# Install Flutter SDK, which includes Dart.
+flutter --version
+dart --version
+
+# From the Web4ui repository root:
+flutter pub get
+dart format --output=none --set-exit-if-changed lib test
+flutter analyze
+flutter test
