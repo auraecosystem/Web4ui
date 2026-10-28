@@ -15,7 +15,7 @@ void main() {
     test('counts lines and ignores whitespace-only lines as non-empty', () {
       final metrics = ScriptMetrics.fromSource('void main() {\n  \n}\n');
 
-      expect(metrics.characterCount, 20);
+      expect(metrics.characterCount, 19);
       expect(metrics.lineCount, 4);
       expect(metrics.nonEmptyLineCount, 2);
     });
