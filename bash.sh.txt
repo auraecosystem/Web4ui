@@ -1,3 +1,0 @@
-git add .vscode/
-git commit -m "Add VSCode configurations"
-git push

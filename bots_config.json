@@ -2,7 +2,6 @@
   "bots": [
     {
       "id": "script-analyzer",
-      "name": "Script Analyzer",
       "enabled": true
     }
   ]

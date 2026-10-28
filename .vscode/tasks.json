@@ -5,6 +5,8 @@
       "label": "Flutter: Get Dependencies",
       "type": "shell",
       "command": "flutter pub get",
+      "problemMatcher": [],
+      "group": "build"
       "problemMatcher": []
     },
     {
@@ -17,23 +19,23 @@
       "label": "Flutter: Analyze",
       "type": "shell",
       "command": "flutter analyze",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "problemMatcher": [],
+      "group": "build"
+      "group": "build",
       "problemMatcher": []
     },
     {
       "label": "Flutter: Test",
       "type": "shell",
       "command": "flutter test",
-      "group": "test",
-      "problemMatcher": []
+      "problemMatcher": [],
+      "group": "test"
     },
     {
       "label": "Flutter: Run",
       "type": "shell",
       "command": "flutter run",
+      "group": "test",
       "problemMatcher": []
     }
   ]

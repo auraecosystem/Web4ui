@@ -1,18 +1,17 @@
-import 'package:web4ui/bots/bot_registry.dart';
+import 'lib/script_analyzer_bot.dart';
 
-/// Small standalone demo; the Flutter app starts from lib/main.dart.
+/// Standalone Dart demo. The Flutter app entry point is lib/main.dart.
+void main() {
+  const sampleScript = '''
+// TODO: replace this sample with a file input
 Future<void> main() async {
-  final registry = BotRegistry();
-  registry.configure(
-    '{"bots":[{"id":"script-analyzer","enabled":true}]}',
-  );
-  final reports = await registry.runAll(
-    '// TODO: replace this sample\nvoid main() async { await work(); }',
-  );
-  for (final report in reports) {
-    print(report.title);
-    for (final finding in report.findings) {
-      print(finding);
-    }
-  }
+  await doSomething();
 }
+''';
+
+  ScriptAnalyzer(sampleScript).analyze();
+}
+/// Root entry point retained for tools that invoke `dart run main.dart`.
+import 'lib/main.dart' as web4ui;
+
+void main() => web4ui.main();

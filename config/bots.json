@@ -1,0 +1,8 @@
+{
+  "bots": [
+    {
+      "id": "script-analyzer",
+      "enabled": true
+    }
+  ]
+}
