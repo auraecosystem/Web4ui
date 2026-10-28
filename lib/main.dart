@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'script_metrics.dart';
+
 import 'bots/bot.dart';
 import 'bots/bot_registry.dart';
 
@@ -148,6 +150,8 @@ class _ScriptAnalyzerPageState extends State<ScriptAnalyzerPage> {
                               _WelcomeCard(),
                               const SizedBox(height: 20),
                               _editorCard(compact),
+                              const SizedBox(height: 14),
+                              _metricsCard(),
                               const SizedBox(height: 20),
                               _resultsCard(),
                               const SizedBox(height: 20),
@@ -213,6 +217,7 @@ class _ScriptAnalyzerPageState extends State<ScriptAnalyzerPage> {
                   ),
                   TextField(
                     controller: _scriptController,
+                    onChanged: (_) => setState(() {}),
                     minLines: compact ? 9 : 12,
                     maxLines: 22,
                     keyboardType: TextInputType.multiline,
@@ -282,6 +287,20 @@ class _ScriptAnalyzerPageState extends State<ScriptAnalyzerPage> {
           ],
         ),
       );
+
+  Widget _metricsCard() {
+    final metrics = ScriptMetrics.fromSource(_scriptController.text);
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children: [
+        _MetricChip(label: 'Lines', value: '${metrics.lineCount}', icon: Icons.format_list_numbered_rounded),
+        _MetricChip(label: 'Characters', value: '${metrics.characterCount}', icon: Icons.text_fields_rounded),
+        _MetricChip(label: 'TODO', value: '${metrics.todoCount}', icon: Icons.checklist_rounded),
+        _MetricChip(label: 'FIXME', value: '${metrics.fixmeCount}', icon: Icons.flag_outlined),
+      ],
+    );
+  }
 
   Widget _resultsCard() => _Card(
         child: Column(
@@ -361,6 +380,38 @@ class _ScriptAnalyzerPageState extends State<ScriptAnalyzerPage> {
                     ],
                   ),
                 ),
+          ],
+        ),
+      );
+}
+
+class _MetricChip extends StatelessWidget {
+  const _MetricChip({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
+
+  final String label;
+  final String value;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+        decoration: BoxDecoration(
+          color: _panel,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: _line),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 15, color: _muted),
+            const SizedBox(width: 7),
+            Text(label, style: const TextStyle(color: _muted, fontSize: 12)),
+            const SizedBox(width: 7),
+            Text(value, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
           ],
         ),
       );
