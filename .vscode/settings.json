@@ -1,6 +1,13 @@
 {
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "dart.lineLength": 80
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
