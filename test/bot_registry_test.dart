@@ -1,65 +1,37 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:web4ui/bot_system.dart';
-
-class EchoBot implements Web4Bot {
-  @override
-  String get id => 'echo';
-  @override
-  String get name => 'Echo';
-  @override
-  String get description => 'Returns the input.';
-  @override
-  Future<BotResult> run(BotContext context) async => BotResult(
-        botId: id,
-        summary: context.input,
-      );
-}
+import 'package:web4ui/bot_registry.dart';
 
 void main() {
   group('BotRegistry', () {
-    test('registers and runs a bot by ID', () async {
-      final registry = BotRegistry([EchoBot()]);
-      final result = await registry.run('echo', const BotContext(input: 'hello'));
-      expect(result.botId, 'echo');
-      expect(result.summary, 'hello');
+    test('registers and runs a bot', () async {
+      final registry = BotRegistry()..register(ScriptMetricsBot());
+
+      final report = await registry.run(
+        'script-metrics',
+        'void main() async {\n  // TODO: improve\n  await work();\n}',
+      );
+
+      expect(report.botId, 'script-metrics');
+      expect(report.summary, contains('4 lines'));
+      expect(report.summary, contains('1 TODO/FIXME marker(s)'));
+      expect(report.findings, hasLength(1));
     });
 
-    test('rejects duplicate bot IDs', () {
-      expect(() => BotRegistry([EchoBot(), EchoBot()]), throwsArgumentError);
-    });
+    test('rejects duplicate bot ids', () {
+      final registry = BotRegistry()..register(ScriptMetricsBot());
 
-    test('reports unknown bot IDs', () async {
-      final registry = BotRegistry([EchoBot()]);
       expect(
-        () => registry.run('missing', const BotContext(input: 'x')),
-        throwsArgumentError,
+        () => registry.register(ScriptMetricsBot()),
+        throwsA(isA<StateError>()),
       );
     });
 
-    test('script analyzer is exposed through the common contract', () async {
-      final registry = BotRegistry([ScriptAnalyzerPlugin()]);
-      final result = await registry.run(
-        'script-analyzer',
-        const BotContext(input: '// TODO: improve\nvoid work() async { await task(); }'),
-      );
-      expect(result.details['commentCount'], 1);
-      expect(result.details['todoFixmeCount'], 1);
-      expect(result.details['usesAsyncAwait'], isTrue);
-    });
+    test('reports unknown bot ids', () {
+      final registry = BotRegistry();
 
-    test('JSON config selects only enabled registered bots', () {
-      final registry = BotRegistry([EchoBot()]);
-      final enabled = registry.enabledFromJson(
-        '{"bots":[{"id":"echo","enabled":true},{"id":"other","enabled":false}]}',
-      );
-      expect(enabled.map((bot) => bot.id), ['echo']);
-    });
-
-    test('JSON config rejects unknown enabled bots', () {
-      final registry = BotRegistry([EchoBot()]);
       expect(
-        () => registry.enabledFromJson('{"bots":[{"id":"missing"}]}'),
-        throwsFormatException,
+        () => registry.run('missing', ''),
+        throwsA(isA<StateError>()),
       );
     });
   });

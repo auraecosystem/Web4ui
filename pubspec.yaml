@@ -1,5 +1,6 @@
 name: web4ui
 description: Web4ui application with an extensible, explicitly registered bot system.
+description: Web4ui Flutter application and local script-analysis bot framework.
 publish_to: none
 version: 0.1.0
 
@@ -9,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^1.4.0
 
 dev_dependencies:
   flutter_test:
@@ -18,3 +20,7 @@ flutter:
   uses-material-design: true
   assets:
     - config/bots.json
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

@@ -7,6 +7,7 @@
       "command": "flutter pub get",
       "problemMatcher": [],
       "group": "build"
+      "problemMatcher": []
     },
     {
       "label": "Dart: Format",
@@ -20,6 +21,8 @@
       "command": "flutter analyze",
       "problemMatcher": [],
       "group": "build"
+      "group": "build",
+      "problemMatcher": []
     },
     {
       "label": "Flutter: Test",
@@ -32,6 +35,7 @@
       "label": "Flutter: Run",
       "type": "shell",
       "command": "flutter run",
+      "group": "test",
       "problemMatcher": []
     }
   ]

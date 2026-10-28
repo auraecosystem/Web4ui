@@ -3,6 +3,13 @@ import '../src/bot.dart';
 
 /// Adapts Web4ui's existing script analyzer to the common bot interface.
 class ScriptAnalyzerPlugin implements Web4Bot {
+import '../script_analyzer_bot.dart';
+import 'bot.dart';
+
+/// Adapts the existing ScriptAnalyzer implementation to the Web4ui bot API.
+class ScriptAnalyzerPlugin implements Web4Bot {
+  const ScriptAnalyzerPlugin();
+
   @override
   String get id => 'script-analyzer';
 
@@ -30,6 +37,17 @@ class ScriptAnalyzerPlugin implements Web4Bot {
       botId: id,
       summary: 'Script analysis completed.',
       details: details,
+  Future<BotReport> run(String input) async {
+    final analyzer = ScriptAnalyzer(input);
+    return BotReport(
+      botId: id,
+      title: 'Script analysis',
+      findings: <String>[
+        'Comments found: ${analyzer.countComments()}',
+        'Uses async/await: ${analyzer.usesAsyncAwait()}',
+        'TODO/FIXME markers: ${analyzer.countTodoFixme()}',
+        'Has long functions (>50 lines): ${analyzer.hasLongFunctions()}',
+      ],
     );
   }
 }
