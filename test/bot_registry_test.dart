@@ -1,37 +1,38 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:web4ui/bots/bot_registry.dart';
+import 'package:web4ui/bot_registry.dart';
 
 void main() {
   group('BotRegistry', () {
-    test('runs the built-in script analyzer', () async {
-      final registry = BotRegistry();
-      registry.configure('{"bots":[{"id":"script-analyzer","enabled":true}]}');
+    test('registers and runs a bot', () async {
+      final registry = BotRegistry()..register(ScriptMetricsBot());
 
-      final reports = await registry.runAll('// TODO: check\nvoid main() async { await work(); }');
-      expect(reports, hasLength(1));
-      expect(reports.single.botId, 'script-analyzer');
-      expect(reports.single.findings, contains('TODO/FIXME markers: 1'));
-      expect(reports.single.findings, contains('Uses async/await: true'));
+      final report = await registry.run(
+        'script-metrics',
+        'void main() async {\n  // TODO: improve\n  await work();\n}',
+      );
+
+      expect(report.botId, 'script-metrics');
+      expect(report.summary, contains('4 lines'));
+      expect(report.summary, contains('1 TODO/FIXME marker(s)'));
+      expect(report.findings, hasLength(1));
     });
 
-    test('can disable a known bot', () {
-      final registry = BotRegistry();
-      registry.configure('{"bots":[{"id":"script-analyzer","enabled":false}]}');
-      expect(registry.activeBots, isEmpty);
-    });
+    test('rejects duplicate bot ids', () {
+      final registry = BotRegistry()..register(ScriptMetricsBot());
 
-    test('rejects unknown bot IDs instead of loading arbitrary code', () {
-      final registry = BotRegistry();
       expect(
-        () => registry.configure('{"bots":[{"id":"remote-code"}]}'),
-        throwsFormatException,
+        () => registry.register(ScriptMetricsBot()),
+        throwsA(isA<StateError>()),
       );
     });
 
-    test('rejects malformed configuration shapes', () {
+    test('reports unknown bot ids', () {
       final registry = BotRegistry();
-      expect(() => registry.configure('[]'), throwsFormatException);
-      expect(() => registry.configure('{"bots":{}}'), throwsFormatException);
+
+      expect(
+        () => registry.run('missing', ''),
+        throwsA(isA<StateError>()),
+      );
     });
   });
 }

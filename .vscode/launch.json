@@ -1,7 +1,11 @@
 {
   "version": "0.2.0",
   "configurations": [
-    { "name": "Web4ui (Flutter)", "request": "launch", "type": "dart", "program": "lib/main.dart" },
-    { "name": "Web4ui (Flutter Web)", "request": "launch", "type": "dart", "program": "lib/main.dart", "args": ["-d", "chrome"] }
+    {
+      "name": "Web4ui (Flutter)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart"
+    }
   ]
 }
