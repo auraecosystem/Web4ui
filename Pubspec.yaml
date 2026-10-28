@@ -1,4 +1,24 @@
+# Canonical Flutter manifest: use lowercase pubspec.yaml.
+# Kept for compatibility with existing repository tooling.
+name: web4ui
+description: Web4ui Flutter interface with a safe, modular local bot registry.
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.19.0'
+
 dependencies:
   flutter:
     sdk: flutter
-  http: ^2.13.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test: ^1.25.8
+
+flutter:
+  uses-material-design: true
+  assets:
+    - Bot/bots_config.json

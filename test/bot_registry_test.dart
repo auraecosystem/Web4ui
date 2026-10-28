@@ -34,5 +34,15 @@ void main() {
         throwsA(isA<StateError>()),
       );
     });
+
+    test('rejects duplicate bot IDs in configuration', () {
+      final registry = BotRegistry();
+      expect(
+        () => registry.configure(
+          '{"bots":[{"id":"script-analyzer"},{"id":"script-analyzer"}]}',
+        ),
+        throwsFormatException,
+      );
+    });
   });
 }
