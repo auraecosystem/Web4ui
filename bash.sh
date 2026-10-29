@@ -1,6 +1,10 @@
 sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
-
+flutter pub get
+dart format lib test
+dart format --output=none --set-exit-if-changed lib test
+flutter analyze
+flutter test
 git add .vscode/
 git commit -m "Add VSCode configurations"
 git push
@@ -50,5 +54,9 @@ dart --version
 # From the Web4ui repository root:
 flutter pub get
 dart format --output=none --set-exit-if-changed lib test
+flutter analyze
+flutter test
+flutter pub get
+dart format lib test
 flutter analyze
 flutter test
