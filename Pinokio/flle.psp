@@ -1,0 +1,20 @@
+~/pinokio
+  /api
+    <app1>
+    <app2>
+    ...
+  /bin
+  /cache
+  /drive
+  /logs
+  /web            <= Copy & paste the web folder here
+    /public
+      app.css
+      bg.jpeg
+      icon.png
+      popperjs.js
+      tippy.css
+      tippy.js
+    /views
+      index.ejs
+    config.json
