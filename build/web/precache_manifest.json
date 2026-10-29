@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "url": "flutter_bootstrap.js",
+      "hash": "a1b2c3d4",
+      "size": 10432,
+      "urlHashed": false
+    },
+    {
+      "url": "main.dart.f215ce97.wasm",
+      "hash": "f215ce97",
+      "size": 1842104,
+      "urlHashed": true
+    }
+  ]
+}
