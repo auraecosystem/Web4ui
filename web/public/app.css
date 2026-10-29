@@ -1,0 +1,16 @@
+body {
+  background: firebrick !important;
+  color: gold !important;
+}
+aside {
+  background: transparent !important;
+}
+nav {
+  background: none !important;
+}
+.header-item.btn {
+  color: gold !important;
+}
+.btn2 {
+  color: gold !important;
+}
