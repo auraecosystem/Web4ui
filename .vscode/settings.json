@@ -16,5 +16,10 @@
   "files.trimTrailingWhitespace": true,
   "[dart]": {
     "editor.defaultFormatter": "Dart-Code.dart-code"
-  }
+  },
+  {
+  "chat.editor.localAgent.enabled": true,
+  "chat.defaultToCopilotHarness": false,
+  "chat.editor.preferCopilotHarness": false
+}
 }
